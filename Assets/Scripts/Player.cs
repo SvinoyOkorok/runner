@@ -2,36 +2,26 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private bool isGrounded;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float groundCheckDistance = 0.7f;
     [SerializeField] private float jumpForce = 20f;
     [SerializeField] private Rigidbody2D rb;
 
     private void Update()
     {
-        Jump();   
+        Jump();
     }
 
     private void Jump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if(Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             rb.linearVelocityY = jumpForce;
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private bool IsGrounded()
     {
-        if(collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if(collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
-        }
+        return Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
     }
 }
